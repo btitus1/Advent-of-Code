@@ -1,0 +1,3 @@
+/home/btitus1/CLionProjects/AdventOfCode2022/Day_10/cmake-build-debug/CMakeFiles/Day_10.dir
+/home/btitus1/CLionProjects/AdventOfCode2022/Day_10/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/btitus1/CLionProjects/AdventOfCode2022/Day_10/cmake-build-debug/CMakeFiles/rebuild_cache.dir
