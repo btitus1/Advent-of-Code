@@ -29,7 +29,6 @@
 #include <string>
 #include <vector>
 #include <regex>
-#include <cstdint>
 
 using namespace std;
 
@@ -39,7 +38,7 @@ const string file2 = "input2.txt";
 vector <string> lines;
 
 /*
- * Reads an input text file into a vector array pf strings
+ * Reads an input text file into a vector array of strings
  */
 void readfile(const string& inputFile) {
 	string line;
