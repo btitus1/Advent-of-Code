@@ -29,36 +29,34 @@
 #include <string>
 #include <vector>
 
-#define REDMAX 12
-#define GREENMAX  13
-#define BLUEMAX 14
-
 using namespace std;
 
 const string file1 = "input1.txt";
 
-vector<string> explode(char d, const string& s)
-{
+const int REDMAX = 12;
+const int GREENMAX = 13;
+const int BLUEMAX = 14;
+
+vector<string> explode(char d, const string& s) {
     vector<string> v;
     string buf;
     for (char i : s)
     {
-        if (i == d)
-        {
-            v.push_back(buf);
-            buf = "";
+        if (i == d) {
+            v.push_back(move(buf));
+            buf.clear();
+        } else {
+            buf.push_back(i);
         }
-        else
-            buf.append(1, i);
     }
-    v.push_back(buf);
-    if (v[v.size() - 1].empty())
+    v.push_back(move(buf));
+    if (v.back().empty()) {
         v.pop_back();
+    }
     return v;
 }
 
-int main()
-{
+int main() {
     cout << "Day 2\n";
 
     ifstream inputFile(file1);
@@ -72,43 +70,42 @@ int main()
         while (getline(inputFile, line)) {
             line = line.substr(line.find(':') + 2);
 
-            vector <string> games = explode(';', line);
+            auto games = explode(';', line);
 
             bool gamePossible = true;
             int redMin = 0;
             int greenMin = 0;
             int blueMin = 0;
 
-            for (const auto & game : games) {
-                vector <string> cubes = explode(',', game);
+            for (const auto& game : games) {
+                auto cubes = explode(',', game);
 
-                for (auto & cube : cubes) {
-                    // eliminate leading space --> probably a better way to do this
-                    if (cube.at(0) == ' ') {
-                        cube = cube.substr(1);
+                for (auto& cube : cubes) {
+                    // eliminate leading space
+                    if (!cube.empty() && cube.front() == ' ') {
+                        cube.erase(cube.begin());
                     }
 
                     // grab the number as a string and convert to integer
-                    int count = stoi(cube.substr(0,cube.find(' ')));
+                    int count = stoi(cube.substr(0, cube.find(' ')));
 
                     // check limits for each color
-                    if (cube.substr(cube.find(' ') + 1, 3) == "red") {
+                    auto color = cube.substr(cube.find(' ') + 1);
+                    if (color == "red") {
                         if (count > REDMAX) {
                             gamePossible = false;
                         }
                         if (count > redMin) {
                             redMin = count;
                         }
-                    }
-                    if (cube.substr(cube.find(' ') + 1, 5) == "green") {
+                    } else if (color == "green") {
                         if (count > GREENMAX) {
                             gamePossible = false;
                         }
                         if (count > greenMin) {
                             greenMin = count;
                         }
-                    }
-                    if (cube.substr(cube.find(' ') + 1, 4) == "blue") {
+                    } else if (color == "blue") {
                         if (count > BLUEMAX) {
                             gamePossible = false;
                         }
@@ -128,7 +125,5 @@ int main()
 
         cout << "  Total : " << gameTotal << endl;
         cout << "  Power : " << gamePower << endl;
-
     }
-
 }
