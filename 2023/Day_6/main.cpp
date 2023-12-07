@@ -56,16 +56,6 @@ static bool readFile(const string &fileName, vector<string> &lines) {
     return true;
 }
 
-auto countWins = [](const uint64_t t, const uint64_t d) {
-    uint64_t wins{};
-    for (uint64_t v = 0; v <= t; ++v) {
-        if (v * (t-v) > d) {
-            wins++;
-        }
-    }
-    return wins;
-};
-
 auto winsAnalysis =[](const uint64_t t, const uint64_t d) {
     const auto s = sqrt(t * t / 4. - d);
     auto x1 = static_cast<uint64_t>(ceil(t / 2. - s));
@@ -125,7 +115,7 @@ int main() {
     }
 
     {  // Part 2
-        uint64_t p2{1};
+        uint64_t p2;
         p2 = winsAnalysis(toNumberFromDigits(lines[0]), toNumberFromDigits(lines[1]));
         cout << "  Part 2" << endl;
         cout << "    Ways to beat the record in one race : " << p2 << endl;
