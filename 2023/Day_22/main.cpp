@@ -26,6 +26,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <utility>
 #include <vector>
 #include <array>
 #include <cstdint>
@@ -48,15 +49,15 @@ static bool overlap(const Brick &a, const Brick &b) {
 
 
 struct Jenga {
-    Jenga(const Bricks &_bricks, uint16_t minZ) : bricks{_bricks} {
+    Jenga(Bricks _bricks, uint16_t minZ) : bricks{std::move(_bricks)} {
         // Move to the ground
         for (auto &b: bricks) {
             b[0][2] -= minZ;
             b[1][2] -= minZ;
         }
 
-        for (uint16_t i = 0; i < bricks.size(); ++i) {
-            for (uint16_t j = i + 1; j < bricks.size(); ++j) {
+        for (size_t i = 0; i < bricks.size(); ++i) {
+            for (size_t j = i + 1; j < bricks.size(); ++j) {
                 const auto &a = bricks[i];
                 const auto &b = bricks[j];
 
@@ -79,13 +80,13 @@ struct Jenga {
         bool moved;
         do {
             moved = false;
-            for (uint16_t i = 0; i < bricks.size(); ++i) {
+            for (int i = 0; i < bricks.size(); ++i) {
                 auto &b = bricks[i];
                 if (auto it = below.find(i); it != below.end()) {
-                    int16_t minZ(UINT16_MAX);
+                    int minZ(UINT16_MAX);
                     for (auto j: it->second) {
                         const auto &a = bricks[j];
-                        minZ = min<uint16_t>(minZ, b[0][2] - a[1][2]);
+                        minZ = min<int>(minZ, b[0][2] - a[1][2]);
                         if (0 == minZ) {
                             break;
                         }
@@ -112,13 +113,13 @@ struct Jenga {
         bool moved;
         do {
             moved = false;
-            for (uint16_t i = 0; i < bricks.size(); ++i) {
+            for (int i = 0; i < bricks.size(); ++i) {
                 auto &b = bricks_copy[i];
                 if (b[0][2] < bricks_copy[k][1][2]) {
                     continue;
                 }
                 if (auto it = below.find(i); it != below.end()) {
-                    int16_t minZ(UINT16_MAX);
+                    int minZ(UINT16_MAX);
                     for (auto j: it->second) {
                         const auto &a = bricks_copy[j];
                         minZ = min<uint16_t>(minZ, b[0][2] - a[1][2]);
@@ -172,7 +173,7 @@ struct Jenga {
 
     IndexSet disintegrable() const {
         IndexSet removable;
-        for (uint16_t i = 0; i < bricks.size(); ++i) {
+        for (int i = 0; i < bricks.size(); ++i) {
             if (!willMove(i)) {
                 removable.insert(i);
             }
@@ -183,7 +184,7 @@ struct Jenga {
     size_t countFalling() const
     {
         size_t count{};
-        for (uint16_t i=0; i < bricks.size(); ++i) {
+        for (int i=0; i < bricks.size(); ++i) {
             count +=settle(i);
         }
         return count;
